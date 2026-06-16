@@ -1,0 +1,27 @@
+# System dependency required (installed by setup.py):
+#   apt-get install libcudnn9-cuda-12
+#   onnxruntime-gpu 1.23+ requires cuDNN 9. The VESSL image ships cuDNN 8 only.
+#
+# After pip install, setup.py removes the CPU-only `onnxruntime` package that
+# insightface pulls in as a dependency, then force-reinstalls onnxruntime-gpu
+# so that CUDAExecutionProvider is available.
+
+--extra-index-url https://download.pytorch.org/whl/cu121
+torch==2.3.1+cu121
+torchvision==0.18.1+cu121
+transformers==4.44.2
+diffusers==0.30.3
+accelerate==1.14.0
+safetensors==0.8.0
+insightface==1.0.1
+onnxruntime-gpu==1.23.2
+numpy==2.2.6
+opencv-python==4.10.0.84
+pillow==12.2.0
+pillow-heif==1.4.0
+mediapipe==0.10.35
+fastapi==0.137.1
+uvicorn==0.30.5
+python-multipart==0.0.32
+google-genai==2.8.0
+pyngrok==8.1.2

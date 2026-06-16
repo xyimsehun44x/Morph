@@ -6,7 +6,7 @@
     <title>MorphPhysique AI — See Your Transformation Before You Start</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="templatemo-quantix-style.css">
     <link href="https://cdn.jsdelivr.net/npm/busy-load/dist/app.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/dinoqqq/simple-popup@master/dist/jquery.simple-popup.min.css" rel="stylesheet" type="text/css" />
@@ -37,7 +37,7 @@
             --blue: #3B82F6;
         }
 
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif; }
 
         /* Display font for big headings */
         .display-font { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.02em; }
@@ -492,7 +492,7 @@
             border: 1px solid var(--border-subtle);
             border-radius: 10px;
             padding: 14px 16px;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
             font-size: 14.5px;
             color: var(--text-primary);
             outline: none;
@@ -638,6 +638,39 @@
             .morph-stats { grid-template-columns: repeat(3,1fr); }
             .hero h1 { font-size: clamp(52px, 14vw, 80px); }
         }
+
+        /* ===== LANG TOGGLE ===== */
+        .lang-toggle {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 12px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+            padding: 4px 9px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: color 0.2s, border-color 0.2s, background 0.2s;
+            letter-spacing: 0.04em;
+        }
+
+        .lang-btn.active {
+            border-color: var(--accent-border);
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+
+        .lang-btn:not(.active):hover {
+            color: var(--text-primary);
+            border-color: rgba(255,255,255,0.15);
+        }
     </style>
 </head>
 <body>
@@ -650,16 +683,21 @@
                 MorphPhysique
             </a>
             <ul class="nav-links" id="navLinks">
-                <li><a href="#how-it-works">How It Works</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#guardrails">Guardrails</a></li>
-                <li><a href="#waitlist">Waitlist</a></li>
+                <li><a href="#how-it-works" data-i18n="nav-how">How It Works</a></li>
+                <li><a href="#features" data-i18n="nav-features">Features</a></li>
+                <li><a href="#guardrails" data-i18n="nav-guardrails">Guardrails</a></li>
+                <li><a href="#waitlist" data-i18n="nav-waitlist">Feedback</a></li>
                 <li class="nav-mobile-actions">
-                    <a href="#waitlist" class="btn btn-primary">Join Waitlist →</a>
+                    <a href="morph.html" class="btn btn-primary"><span data-i18n="btn-try-now">Try It Now </span>→</a>
                 </li>
             </ul>
             <div class="nav-actions">
-                <a href="#waitlist" class="btn btn-primary">Join Waitlist <span class="btn-arrow">→</span></a>
+                <a href="#waitlist" style="font-size:13px;color:var(--text-secondary);text-decoration:none;margin-right:12px;" data-i18n="nav-join">Leave Feedback</a>
+                <a href="morph.html" class="btn btn-primary"><span data-i18n="btn-try-now">Try It Now </span><span class="btn-arrow">→</span></a>
+                <div class="lang-toggle">
+                    <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+                    <button class="lang-btn" id="btn-kr" onclick="setLang('kr')">한국어</button>
+                </div>
             </div>
             <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
@@ -673,23 +711,23 @@
             <div class="hero-content">
                 <div class="hero-badge">
                     <span class="badge-dot"></span>
-                    AI-Powered Body Transformation
+                    <span data-i18n="hero-badge">AI-Powered Body Transformation</span>
                 </div>
-                <h1>See Your<br><span class="gradient-text">Morph</span><br>Before You<br>Lift</h1>
-                <p class="hero-desc">Upload your photo, choose your ideal physique, and MorphPhysique AI generates a hyper-personalized visual roadmap — built around your unique bone structure and genetics.</p>
-                <p style="font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,3vw,32px);letter-spacing:0.06em;color:var(--text-secondary);margin-bottom:28px;line-height:1.3;">
+                <h1 id="hero-title">See Your<br><span class="gradient-text">Morph</span><br>Before You<br>Lift</h1>
+                <p class="hero-desc" data-i18n="hero-desc">Upload your photo, choose your ideal physique, and MorphPhysique AI generates a hyper-personalized visual roadmap — built around your unique bone structure and genetics.</p>
+                <p id="hero-sub" style="font-family:'Bebas Neue',sans-serif;font-size:clamp(22px,3vw,32px);letter-spacing:0.06em;color:var(--text-secondary);margin-bottom:28px;line-height:1.3;">
                     Be the next <span style="color:var(--accent)">cBum.</span>
                 </p>
 
                 <div class="hero-cta">
-                    <a href="#waitlist" class="btn btn-primary btn-lg">Get Early Access <span class="btn-arrow">→</span></a>
-                    <a href="#how-it-works" class="btn btn-secondary btn-lg">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        See How It Works
+                    <a href="morph.html" class="btn btn-primary btn-lg"><span data-i18n="btn-try-now">Try It Now </span><span class="btn-arrow">→</span></a>
+                    <a href="#waitlist" class="btn btn-secondary btn-lg">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span data-i18n="btn-join-hero">Leave Feedback</span>
                     </a>
                 </div>
                 <div class="trusted-row">
-                    <p class="trusted-label">Trusted by athletes at</p>
+                    <p class="trusted-label" data-i18n="trusted-label">Shared with students at</p>
                     <div class="trusted-logos">
                         <span class="trusted-logo"><span class="t-icon"></span> Yonsei</span>
                         <span class="trusted-logo"><span class="t-icon"></span> KAIST</span>
@@ -778,22 +816,23 @@
     <!-- STATS -->
     <section class="stats-strip">
         <div class="container">
+            <p style="text-align:center;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:24px;" data-i18n="stats-vision">Our Vision for Launch</p>
             <div class="stats-grid">
                 <div class="stat-item reveal reveal-delay-1">
                     <div class="stat-number">94%</div>
-                    <div class="stat-label">Users report stronger motivation</div>
+                    <div class="stat-label" data-i18n="stat1">Target motivation boost vs baseline</div>
                 </div>
                 <div class="stat-item reveal reveal-delay-2">
                     <div class="stat-number">3x</div>
-                    <div class="stat-label">Faster goal alignment vs generic apps</div>
+                    <div class="stat-label" data-i18n="stat2">Faster goal alignment vs generic apps</div>
                 </div>
                 <div class="stat-item reveal reveal-delay-3">
                     <div class="stat-number">12wk</div>
-                    <div class="stat-label">Average first visible transformation</div>
+                    <div class="stat-label" data-i18n="stat3">Target first visible transformation</div>
                 </div>
                 <div class="stat-item reveal">
                     <div class="stat-number">100%</div>
-                    <div class="stat-label">Personalized to your genetics</div>
+                    <div class="stat-label" data-i18n="stat4">Personalized to your genetics</div>
                 </div>
             </div>
         </div>
@@ -803,9 +842,9 @@
     <section class="how-section" id="how-it-works">
         <div class="container">
             <div class="section-header reveal">
-                <p class="section-label">Process</p>
-                <h2 class="section-title display-font" style="font-size:clamp(40px,5vw,64px);font-weight:400;letter-spacing:0.04em">How The Morph Works</h2>
-                <p class="section-desc">Three AI-powered phases turn your photos and biometrics into a visual transformation roadmap.</p>
+                <p class="section-label" data-i18n="how-label">Process</p>
+                <h2 class="section-title display-font" id="how-title" style="font-size:clamp(40px,5vw,64px);font-weight:400;letter-spacing:0.04em" data-i18n="how-title">How The Morph Works</h2>
+                <p class="section-desc" data-i18n="how-desc">Three AI-powered phases turn your photos and biometrics into a visual transformation roadmap.</p>
             </div>
 
             <div class="steps-grid">
@@ -814,24 +853,24 @@
                     <div class="step-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/></svg>
                     </div>
-                    <h3>Input & Biometrics</h3>
-                    <p>Upload a clear front-facing photo plus your target physique. Enter age, height, weight, body fat estimate, and training history. The AI needs your blueprint before it can build your roadmap.</p>
+                    <h3 data-i18n="step1-title">Input & Biometrics</h3>
+                    <p data-i18n="step1-desc">Upload a clear front-facing photo plus your target physique. Enter age, height, weight, body fat estimate, and training history. The AI needs your blueprint before it can build your roadmap.</p>
                 </div>
                 <div class="step-card">
                     <span class="step-number">02</span>
                     <div class="step-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
                     </div>
-                    <h3>The Morph (Generative AI)</h3>
-                    <p>Using Stable Diffusion with ControlNet and IP-Adapter, the AI preserves your facial identity and bone structure while projecting realistic muscle development — scaled to your actual skeletal frame, not the model's.</p>
+                    <h3 data-i18n="step2-title">The Morph (Generative AI)</h3>
+                    <p data-i18n="step2-desc">Using Stable Diffusion with ControlNet and IP-Adapter, the AI preserves your facial identity and bone structure while projecting realistic muscle development — scaled to your actual skeletal frame, not the model's.</p>
                 </div>
                 <div class="step-card">
                     <span class="step-number">03</span>
                     <div class="step-icon">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
                     </div>
-                    <h3>Your Plan Architect</h3>
-                    <p>Computer vision analyzes the morph for muscle imbalances. GPT-4 then builds a lagging-part specialization workout routine and dynamic hypertrophy nutrition plan — both tied directly to the visual outcome.</p>
+                    <h3 data-i18n="step3-title">Your Plan Architect</h3>
+                    <p data-i18n="step3-desc">Computer vision analyzes the morph for muscle imbalances. GPT-4 then builds a lagging-part specialization workout routine and dynamic hypertrophy nutrition plan — both tied directly to the visual outcome.</p>
                 </div>
             </div>
         </div>
@@ -841,17 +880,17 @@
     <section class="section features-section" id="features">
         <div class="container">
             <div class="section-header reveal">
-                <p class="section-label">Features</p>
-                <h2 class="section-title">Vision-Driven<br>Autoregulation</h2>
-                <p class="section-desc">Every feature is designed around one goal: close the gap between where you are and what you can realistically become.</p>
+                <p class="section-label" data-i18n="feat-label">Features</p>
+                <h2 class="section-title" id="feat-title">Vision-Driven<br>Autoregulation</h2>
+                <p class="section-desc" data-i18n="feat-desc">Every feature is designed around one goal: close the gap between where you are and what you can realistically become.</p>
             </div>
 
             <div class="feature-tabs" role="tablist">
-                <button class="feature-tab active" data-tab="morph" role="tab">Identity Morph</button>
-                <button class="feature-tab" data-tab="plan" role="tab">Smart Plan</button>
-                <button class="feature-tab" data-tab="nutrition" role="tab">Nutrition</button>
-                <button class="feature-tab" data-tab="feedback" role="tab">Feedback Loop</button>
-                <button class="feature-tab" data-tab="safety" role="tab">Safety AI</button>
+                <button class="feature-tab active" data-tab="morph" role="tab" data-i18n="tab-morph">Identity Morph</button>
+                <button class="feature-tab" data-tab="plan" role="tab" data-i18n="tab-plan">Smart Plan</button>
+                <button class="feature-tab" data-tab="nutrition" role="tab" data-i18n="tab-nutrition">Nutrition</button>
+                <button class="feature-tab" data-tab="feedback" role="tab" data-i18n="tab-feedback">Feedback Loop</button>
+                <button class="feature-tab" data-tab="safety" role="tab" data-i18n="tab-safety">Safety AI</button>
             </div>
 
             <div class="feature-panels">
@@ -861,12 +900,12 @@
                         <div class="feat-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/></svg>
                         </div>
-                        <h3>Identity-Preserving Morph</h3>
-                        <p>Your face, your frame — just the physique you're actually capable of building. The AI doesn't paste a bodybuilder's body onto your head. It models muscle development on your exact skeletal proportions using ControlNet depth mapping.</p>
+                        <h3 data-i18n="panel1-title">Identity-Preserving Morph</h3>
+                        <p data-i18n="panel1-desc">Your face, your frame — just the physique you're actually capable of building. The AI doesn't paste a bodybuilder's body onto your head. It models muscle development on your exact skeletal proportions using ControlNet depth mapping.</p>
                         <ul class="feature-bullets">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Facial identity preserved via IP-Adapter</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Scaled to your actual height & bone structure</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Muscle insertion prediction via CV</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel1-b1">Facial identity preserved via IP-Adapter</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel1-b2">Scaled to your actual height & bone structure</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel1-b3">Muscle insertion prediction via CV</span></li>
                         </ul>
                     </div>
                     <div class="feature-visual">
@@ -905,12 +944,12 @@
                         <div class="feat-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
                         </div>
-                        <h3>Lagging Part Specialization</h3>
-                        <p>The AI analyzes your morph for muscle imbalances, then designs a periodized training block that prioritizes exactly what needs to grow to achieve your target proportions. No generic chest/back splits.</p>
+                        <h3 data-i18n="panel2-title">Lagging Part Specialization</h3>
+                        <p data-i18n="panel2-desc">The AI analyzes your morph for muscle imbalances, then designs a periodized training block that prioritizes exactly what needs to grow to achieve your target proportions. No generic chest/back splits.</p>
                         <ul class="feature-bullets">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> CV-identified lagging muscle groups</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Volume specialization per body part</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 8-week periodized blocks</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel2-b1">CV-identified lagging muscle groups</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel2-b2">Volume specialization per body part</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel2-b3">8-week periodized blocks</span></li>
                         </ul>
                     </div>
                     <div class="feature-visual">
@@ -958,12 +997,12 @@
                         <div class="feat-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
                         </div>
-                        <h3>Dynamic Hypertrophy Nutrition</h3>
-                        <p>Calories aren't static. The plan calculates the precise surplus needed to build the mass difference between your current state and the morph — and adjusts protein and carb ratios week by week based on workout intensity.</p>
+                        <h3 data-i18n="panel3-title">Dynamic Hypertrophy Nutrition</h3>
+                        <p data-i18n="panel3-desc">Calories aren't static. The plan calculates the precise surplus needed to build the mass difference between your current state and the morph — and adjusts protein and carb ratios week by week based on workout intensity.</p>
                         <ul class="feature-bullets">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Mass-difference caloric surplus calculation</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Dynamic macro adjustments weekly</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tied directly to training volume</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel3-b1">Mass-difference caloric surplus calculation</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel3-b2">Dynamic macro adjustments weekly</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel3-b3">Tied directly to training volume</span></li>
                         </ul>
                     </div>
                     <div class="feature-visual">
@@ -1009,12 +1048,12 @@
                         <div class="feat-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                         </div>
-                        <h3>Recursive 4-Week Scan</h3>
-                        <p>Every 4 weeks, re-scan your progress. The AI compares your actual body against the predicted morph timeline, recalibrates the 12-week projection, and shifts workout focus to maintain correct proportions.</p>
+                        <h3 data-i18n="panel4-title">Recursive 4-Week Scan</h3>
+                        <p data-i18n="panel4-desc">Every 4 weeks, re-scan your progress. The AI compares your actual body against the predicted morph timeline, recalibrates the 12-week projection, and shifts workout focus to maintain correct proportions.</p>
                         <ul class="feature-bullets">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> CV comparison: actual vs predicted</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Dynamic plan recalibration</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Proportion-based focus shifts</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel4-b1">CV comparison: actual vs predicted</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel4-b2">Dynamic plan recalibration</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel4-b3">Proportion-based focus shifts</span></li>
                         </ul>
                     </div>
                     <div class="feature-visual">
@@ -1051,12 +1090,12 @@
                         <div class="feat-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                         </div>
-                        <h3>Reality-Based AI Safety</h3>
-                        <p>MorphPhysique AI refuses to create harmful expectations. Three built-in guardrails prevent body dysmorphia, unrealistic PED comparisons, and genetically impossible goals.</p>
+                        <h3 data-i18n="panel5-title">Reality-Based AI Safety</h3>
+                        <p data-i18n="panel5-desc">MorphPhysique AI refuses to create harmful expectations. Three built-in guardrails prevent body dysmorphia, unrealistic PED comparisons, and genetically impossible goals.</p>
                         <ul class="feature-bullets">
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Genetic Probability Score on every morph</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Auto-downgrade PED physiques to natural equivalent</li>
-                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Bone structure honesty disclaimer</li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel5-b1">Genetic Probability Score on every morph</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel5-b2">Auto-downgrade PED physiques to natural equivalent</span></li>
+                            <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> <span data-i18n="panel5-b3">Bone structure honesty disclaimer</span></li>
                         </ul>
                     </div>
                     <div class="feature-visual">
@@ -1096,6 +1135,10 @@
                     </div>
                 </div>
             </div>
+
+            <div style="text-align:center;margin-top:48px;">
+                <a href="morph.html" class="btn btn-primary btn-lg"><span data-i18n="btn-try-now">Try It Now </span><span class="btn-arrow">→</span></a>
+            </div>
         </div>
     </section>
 
@@ -1103,9 +1146,9 @@
     <section class="guardrails-section" id="guardrails">
         <div class="container">
             <div class="section-header reveal">
-                <p class="section-label">Ethics & Safety</p>
-                <h2 class="section-title">Built-In Guardrails</h2>
-                <p class="section-desc">Fitness AI has real psychological stakes. These aren't disclaimers — they're core features that make the app worth trusting.</p>
+                <p class="section-label" data-i18n="gr-label">Ethics & Safety</p>
+                <h2 class="section-title" data-i18n="gr-title">Built-In Guardrails</h2>
+                <p class="section-desc" data-i18n="gr-desc">Fitness AI has real psychological stakes. These aren't disclaimers — they're core features that make the app worth trusting.</p>
             </div>
 
             <div class="guardrails-grid">
@@ -1113,35 +1156,39 @@
                     <div class="guardrail-icon orange">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     </div>
-                    <h3>Genetic Reality Score</h3>
-                    <p>Every generated morph includes a "Genetic Probability Score." The AI explains which muscle shapes are unique to the reference physique's insertions and cannot be replicated through training alone — preventing impossible chasing.</p>
+                    <h3 data-i18n="gr1-title">Genetic Reality Score</h3>
+                    <p data-i18n="gr1-desc">Every generated morph includes a "Genetic Probability Score." The AI explains which muscle shapes are unique to the reference physique's insertions and cannot be replicated through training alone — preventing impossible chasing.</p>
                     <span class="guardrail-tag">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                        Enabled by default
+                        <span data-i18n="gr1-tag">Enabled by default</span>
                     </span>
                 </div>
                 <div class="guardrail-card reveal">
                     <div class="guardrail-icon blue">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
                     </div>
-                    <h3>PED Reality Check</h3>
-                    <p>If a "Natural Athlete" inputs an extreme chemically enhanced physique as their target, the AI automatically generates a tested/natural equivalent instead — with a clear explanation of why the original is not achievable without PEDs.</p>
+                    <h3 data-i18n="gr2-title">PED Reality Check</h3>
+                    <p data-i18n="gr2-desc">If a "Natural Athlete" inputs an extreme chemically enhanced physique as their target, the AI automatically generates a tested/natural equivalent instead — with a clear explanation of why the original is not achievable without PEDs.</p>
                     <span class="guardrail-tag">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                        Automatic detection
+                        <span data-i18n="gr2-tag">Automatic detection</span>
                     </span>
                 </div>
                 <div class="guardrail-card reveal">
                     <div class="guardrail-icon green">
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5"/></svg>
                     </div>
-                    <h3>Recursive Progress Truth</h3>
-                    <p>Every 4-week scan re-anchors the projection to your real body's response. If you're growing slower than predicted, the morph timeline adjusts. The app never lets you chase a version of you that your actual body has already diverged from.</p>
+                    <h3 data-i18n="gr3-title">Recursive Progress Truth</h3>
+                    <p data-i18n="gr3-desc">Every 4-week scan re-anchors the projection to your real body's response. If you're growing slower than predicted, the morph timeline adjusts. The app never lets you chase a version of you that your actual body has already diverged from.</p>
                     <span class="guardrail-tag">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                        Every 4 weeks
+                        <span data-i18n="gr3-tag">Every 4 weeks</span>
                     </span>
                 </div>
+            </div>
+
+            <div style="text-align:center;margin-top:48px;">
+                <a href="morph.html" class="btn btn-primary btn-lg"><span data-i18n="btn-see-morph">See Your Morph </span><span class="btn-arrow">→</span></a>
             </div>
         </div>
     </section>
@@ -1150,34 +1197,34 @@
     <section class="waitlist-section" id="waitlist">
         <div class="container">
             <div class="waitlist-inner">
-                <p class="section-label" style="justify-content:center">Early Access</p>
-                <h2 class="section-title" style="font-family:'Bebas Neue',sans-serif;font-weight:400;letter-spacing:0.04em;font-size:clamp(44px,7vw,80px);line-height:1">Join the<br><span class="gradient-text">Waitlist</span></h2>
-                <p class="section-desc" style="margin:0 auto 36px">Be first to get access when we launch. Leave your email and tell us what you want from MorphPhysique AI.</p>
+                <p class="section-label" style="justify-content:center" data-i18n="wl-label">Your Feedback</p>
+                <h2 class="section-title" id="waitlist-title" style="font-family:'Bebas Neue',sans-serif;font-weight:400;letter-spacing:0.04em;font-size:clamp(44px,7vw,80px);line-height:1">Leave Your<br><span class="gradient-text">Thoughts</span></h2>
+                <p class="section-desc" style="margin:0 auto 36px" data-i18n="wl-desc">Used the app? We want to hear about it — good, bad, or anything in between. Your honest feedback helps us improve.</p>
 
                 <div class="waitlist-form">
-                    <label for="submit-email">Your Email</label>
-                    <input id="submit-email" type="email" placeholder="you@example.com" />
+                    <label for="submit-email" data-i18n="wl-email-label">Your Email</label>
+                    <input id="submit-email" type="email" placeholder="you@example.com" data-i18n-placeholder="wl-email-placeholder" />
 
-                    <label for="submit-advice">What would make you use this app?</label>
-                    <textarea id="submit-advice" placeholder="Tell us what features matter most to you, your fitness goals, or anything else..."></textarea>
+                    <label for="submit-advice" data-i18n="wl-advice-label">Share your experience</label>
+                    <textarea id="submit-advice" placeholder="What did you like? What didn't work? Any features you'd want to see? Tell us everything..." data-i18n-placeholder="wl-advice-placeholder"></textarea>
 
                     <button class="btn btn-primary" id="submit-btn">
-                        Get Early Access <span class="btn-arrow">→</span>
+                        <span data-i18n="btn-get-access">Submit Feedback </span><span class="btn-arrow">→</span>
                     </button>
                 </div>
 
                 <div class="waitlist-trust">
                     <span>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        No spam, ever
+                        <span data-i18n="trust1">All feedback welcome</span>
                     </span>
                     <span>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Free early access
+                        <span data-i18n="trust2">No spam, ever</span>
                     </span>
                     <span>
                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-                        Shape the product
+                        <span data-i18n="trust3">Shape the product</span>
                     </span>
                 </div>
             </div>
@@ -1188,13 +1235,13 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-row-links">
-                <a href="#how-it-works">How It Works</a>
+                <a href="#how-it-works" data-i18n="footer-how">How It Works</a>
                 <span class="footer-link-dot"></span>
-                <a href="#features">Features</a>
+                <a href="#features" data-i18n="footer-features">Features</a>
                 <span class="footer-link-dot"></span>
-                <a href="#guardrails">Safety</a>
+                <a href="#guardrails" data-i18n="footer-safety">Safety</a>
                 <span class="footer-link-dot"></span>
-                <a href="#waitlist">Join Waitlist</a>
+                <a href="#waitlist" data-i18n="footer-waitlist">Leave Feedback</a>
             </div>
             <div class="footer-row-bottom">
                 <p class="footer-copy">Copyright &copy; 2026 MorphPhysique AI. Built for the 2026-1 MVT Course.</p>
@@ -1339,21 +1386,181 @@
             <div style="width:56px;height:56px;background:var(--accent);border-radius:16px;display:grid;place-items:center;margin:0 auto 20px;box-shadow:0 0 32px var(--accent-glow);">
                 <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;">You're On The List</div>
-            <h2 style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:0.04em;color:var(--text-primary);margin-bottom:12px;line-height:1;">Access Confirmed</h2>
-            <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:28px;">We'll notify you the moment MorphPhysique AI launches. Your feedback will directly shape the product.</p>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px;" data-i18n="popup-tag">You're On The List</div>
+            <h2 style="font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:0.04em;color:var(--text-primary);margin-bottom:12px;line-height:1;" data-i18n="popup-title">Access Confirmed</h2>
+            <p style="font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:28px;" data-i18n="popup-desc">We'll notify you the moment MorphPhysique AI launches. Your feedback will directly shape the product.</p>
             <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
                 <div style="background:var(--surface-2);border:1px solid var(--border-subtle);border-radius:10px;padding:12px 20px;font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:8px;">
                     <span style="width:6px;height:6px;border-radius:50%;background:var(--green);display:inline-block"></span>
-                    Early access guaranteed
+                    <span data-i18n="popup-badge1">Early access guaranteed</span>
                 </div>
                 <div style="background:var(--surface-2);border:1px solid var(--border-subtle);border-radius:10px;padding:12px 20px;font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:8px;">
                     <span style="width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block"></span>
-                    Zero spam
+                    <span data-i18n="popup-badge2">Zero spam</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- i18n -->
+    <script>
+        const LANG = {
+            en: {
+                'nav-how': 'How It Works', 'nav-features': 'Features', 'nav-guardrails': 'Guardrails',
+                'nav-waitlist': 'Feedback', 'nav-join': 'Leave Feedback', 'btn-try-now': 'Try It Now ',
+                'hero-badge': 'AI-Powered Body Transformation',
+                'hero-desc': 'Upload your photo, choose your ideal physique, and MorphPhysique AI generates a hyper-personalized visual roadmap — built around your unique bone structure and genetics.',
+                'btn-join-hero': 'Leave Feedback', 'trusted-label': 'Shared with students at',
+                'stats-vision': 'Our Vision for Launch',
+                'stat1': 'Target motivation boost vs baseline', 'stat2': 'Faster goal alignment vs generic apps',
+                'stat3': 'Target first visible transformation', 'stat4': 'Personalized to your genetics',
+                'how-label': 'Process', 'how-title': 'How The Morph Works',
+                'how-desc': 'Three AI-powered phases turn your photos and biometrics into a visual transformation roadmap.',
+                'step1-title': 'Input & Biometrics',
+                'step1-desc': 'Upload a clear front-facing photo plus your target physique. Enter age, height, weight, body fat estimate, and training history. The AI needs your blueprint before it can build your roadmap.',
+                'step2-title': 'The Morph (Generative AI)',
+                'step2-desc': "Using Stable Diffusion with ControlNet and IP-Adapter, the AI preserves your facial identity and bone structure while projecting realistic muscle development — scaled to your actual skeletal frame, not the model's.",
+                'step3-title': 'Your Plan Architect',
+                'step3-desc': 'Computer vision analyzes the morph for muscle imbalances. GPT-4 then builds a lagging-part specialization workout routine and dynamic hypertrophy nutrition plan — both tied directly to the visual outcome.',
+                'feat-label': 'Features',
+                'feat-desc': 'Every feature is designed around one goal: close the gap between where you are and what you can realistically become.',
+                'tab-morph': 'Identity Morph', 'tab-plan': 'Smart Plan', 'tab-nutrition': 'Nutrition',
+                'tab-feedback': 'Feedback Loop', 'tab-safety': 'Safety AI',
+                'panel1-title': 'Identity-Preserving Morph',
+                'panel1-desc': "Your face, your frame — just the physique you're actually capable of building. The AI doesn't paste a bodybuilder's body onto your head. It models muscle development on your exact skeletal proportions using ControlNet depth mapping.",
+                'panel1-b1': 'Facial identity preserved via IP-Adapter', 'panel1-b2': 'Scaled to your actual height & bone structure', 'panel1-b3': 'Muscle insertion prediction via CV',
+                'panel2-title': 'Lagging Part Specialization',
+                'panel2-desc': 'The AI analyzes your morph for muscle imbalances, then designs a periodized training block that prioritizes exactly what needs to grow to achieve your target proportions. No generic chest/back splits.',
+                'panel2-b1': 'CV-identified lagging muscle groups', 'panel2-b2': 'Volume specialization per body part', 'panel2-b3': '8-week periodized blocks',
+                'panel3-title': 'Dynamic Hypertrophy Nutrition',
+                'panel3-desc': "Calories aren't static. The plan calculates the precise surplus needed to build the mass difference between your current state and the morph — and adjusts protein and carb ratios week by week based on workout intensity.",
+                'panel3-b1': 'Mass-difference caloric surplus calculation', 'panel3-b2': 'Dynamic macro adjustments weekly', 'panel3-b3': 'Tied directly to training volume',
+                'panel4-title': 'Recursive 4-Week Scan',
+                'panel4-desc': 'Every 4 weeks, re-scan your progress. The AI compares your actual body against the predicted morph timeline, recalibrates the 12-week projection, and shifts workout focus to maintain correct proportions.',
+                'panel4-b1': 'CV comparison: actual vs predicted', 'panel4-b2': 'Dynamic plan recalibration', 'panel4-b3': 'Proportion-based focus shifts',
+                'panel5-title': 'Reality-Based AI Safety',
+                'panel5-desc': 'MorphPhysique AI refuses to create harmful expectations. Three built-in guardrails prevent body dysmorphia, unrealistic PED comparisons, and genetically impossible goals.',
+                'panel5-b1': 'Genetic Probability Score on every morph', 'panel5-b2': 'Auto-downgrade PED physiques to natural equivalent', 'panel5-b3': 'Bone structure honesty disclaimer',
+                'btn-see-morph': 'See Your Morph ',
+                'gr-label': 'Ethics & Safety', 'gr-title': 'Built-In Guardrails',
+                'gr-desc': "Fitness AI has real psychological stakes. These aren't disclaimers — they're core features that make the app worth trusting.",
+                'gr1-title': 'Genetic Reality Score',
+                'gr1-desc': 'Every generated morph includes a "Genetic Probability Score." The AI explains which muscle shapes are unique to the reference physique\'s insertions and cannot be replicated through training alone — preventing impossible chasing.',
+                'gr1-tag': 'Enabled by default',
+                'gr2-title': 'PED Reality Check',
+                'gr2-desc': 'If a "Natural Athlete" inputs an extreme chemically enhanced physique as their target, the AI automatically generates a tested/natural equivalent instead — with a clear explanation of why the original is not achievable without PEDs.',
+                'gr2-tag': 'Automatic detection',
+                'gr3-title': 'Recursive Progress Truth',
+                'gr3-desc': "Every 4-week scan re-anchors the projection to your real body's response. If you're growing slower than predicted, the morph timeline adjusts. The app never lets you chase a version of you that your actual body has already diverged from.",
+                'gr3-tag': 'Every 4 weeks',
+                'wl-label': 'Your Feedback',
+                'wl-desc': 'Used the app? We want to hear about it — good, bad, or anything in between. Your honest feedback helps us improve.',
+                'wl-email-label': 'Your Email', 'wl-email-placeholder': 'you@example.com',
+                'wl-advice-label': 'Share your experience',
+                'wl-advice-placeholder': 'What did you like? What didn\'t work? Any features you\'d want to see? Tell us everything...',
+                'btn-get-access': 'Submit Feedback ',
+                'trust1': 'All feedback welcome', 'trust2': 'No spam, ever', 'trust3': 'Shape the product',
+                'footer-how': 'How It Works', 'footer-features': 'Features', 'footer-safety': 'Safety', 'footer-waitlist': 'Leave Feedback',
+                'popup-tag': 'Thanks for sharing!', 'popup-title': 'Feedback Received',
+                'popup-desc': "We read every single response. Your thoughts will directly shape the next version of MorphPhysique AI.",
+                'popup-badge1': 'Your voice matters', 'popup-badge2': 'Zero spam',
+            },
+            kr: {
+                'nav-how': '작동 방식', 'nav-features': '기능', 'nav-guardrails': '가이드라인',
+                'nav-waitlist': '피드백', 'nav-join': '피드백 남기기', 'btn-try-now': '지금 시도하기 ',
+                'hero-badge': 'AI 기반 체형 변환',
+                'hero-desc': '사진을 업로드하고 원하는 체형을 선택하면, MorphPhysique AI가 당신의 고유한 골격 구조와 유전자를 기반으로 개인 맞춤형 비주얼 로드맵을 생성합니다.',
+                'btn-join-hero': '피드백 남기기', 'trusted-label': '다음 대학교 학생들과 공유됨',
+                'stats-vision': '론칭 비전',
+                'stat1': '기준 대비 목표 동기 향상', 'stat2': '일반 앱 대비 빠른 목표 달성',
+                'stat3': '첫 눈에 띄는 변화 목표 기간', 'stat4': '유전자 기반 100% 맞춤 설계',
+                'how-label': '프로세스', 'how-title': '모프 작동 방식',
+                'how-desc': '세 가지 AI 기반 단계로 사진과 생체 정보를 비주얼 변환 로드맵으로 전환합니다.',
+                'step1-title': '입력 및 생체 정보',
+                'step1-desc': '정면 사진과 목표 체형 사진을 업로드하세요. 나이, 키, 몸무게, 체지방 추정치, 운동 경력을 입력하세요. AI가 로드맵을 만들기 전에 당신의 정보가 필요합니다.',
+                'step2-title': '모프 (생성형 AI)',
+                'step2-desc': 'Stable Diffusion과 ControlNet, IP-Adapter를 사용하여 AI가 얼굴 정체성과 골격 구조를 유지하면서 실제 골격 프레임에 맞게 조정된 현실적인 근육 발달을 투영합니다.',
+                'step3-title': '당신의 플랜 설계자',
+                'step3-desc': '컴퓨터 비전이 모프의 근육 불균형을 분석합니다. AI가 뒤처진 부위 전문화 운동 루틴과 동적 비대 영양 플랜을 구축합니다.',
+                'feat-label': '기능',
+                'feat-desc': '모든 기능은 한 가지 목표를 위해 설계되었습니다: 현재의 당신과 현실적으로 될 수 있는 모습 사이의 간격을 좁히는 것.',
+                'tab-morph': '정체성 모프', 'tab-plan': '스마트 플랜', 'tab-nutrition': '영양',
+                'tab-feedback': '피드백 루프', 'tab-safety': '안전 AI',
+                'panel1-title': '정체성 보존 모프',
+                'panel1-desc': '당신의 얼굴, 당신의 체형 — 실제로 만들 수 있는 체형만. AI는 보디빌더의 몸을 머리에 붙이지 않습니다. ControlNet 깊이 매핑을 사용하여 실제 골격 비율에 맞게 근육 발달을 모델링합니다.',
+                'panel1-b1': 'IP-Adapter를 통한 얼굴 정체성 보존', 'panel1-b2': '실제 키와 골격 구조에 맞게 조정', 'panel1-b3': 'CV를 통한 근육 삽입 예측',
+                'panel2-title': '뒤처진 부위 전문화',
+                'panel2-desc': 'AI가 모프의 근육 불균형을 분석한 후, 목표 비율을 달성하기 위해 정확히 성장해야 할 부분을 우선시하는 주기화된 트레이닝 블록을 설계합니다. 일반적인 가슴/등 분할은 없습니다.',
+                'panel2-b1': 'CV로 확인된 뒤처진 근육 그룹', 'panel2-b2': '신체 부위별 볼륨 전문화', 'panel2-b3': '8주 주기화 블록',
+                'panel3-title': '동적 비대 영양',
+                'panel3-desc': '칼로리는 고정적이지 않습니다. 플랜은 현재 상태와 모프 사이의 질량 차이를 만들기 위해 필요한 정확한 잉여분을 계산하고 운동 강도에 따라 매주 단백질과 탄수화물 비율을 조정합니다.',
+                'panel3-b1': '질량 차이 칼로리 잉여 계산', 'panel3-b2': '매주 동적 매크로 조정', 'panel3-b3': '트레이닝 볼륨에 직접 연결',
+                'panel4-title': '재귀적 4주 스캔',
+                'panel4-desc': '4주마다 진행 상황을 재스캔합니다. AI가 실제 신체와 예측된 모프 타임라인을 비교하고, 12주 프로젝션을 재조정하며, 올바른 비율을 유지하기 위해 운동 초점을 전환합니다.',
+                'panel4-b1': 'CV 비교: 실제 vs 예측', 'panel4-b2': '동적 플랜 재조정', 'panel4-b3': '비율 기반 초점 전환',
+                'panel5-title': '현실 기반 AI 안전',
+                'panel5-desc': 'MorphPhysique AI는 해로운 기대를 만들기를 거부합니다. 세 가지 내장 가드레일이 신체 변형 공포증, 비현실적인 PED 비교, 유전적으로 불가능한 목표를 방지합니다.',
+                'panel5-b1': '모든 모프에 유전적 확률 점수 제공', 'panel5-b2': '강화된 체형을 자연적 동등물로 자동 변환', 'panel5-b3': '골격 구조 솔직한 면책 조항',
+                'btn-see-morph': '내 모프 보기 ',
+                'gr-label': '윤리 및 안전', 'gr-title': '내장 가이드라인',
+                'gr-desc': '피트니스 AI에는 실제 심리적 위험이 있습니다. 이것들은 단순한 면책 조항이 아닙니다 — 앱을 신뢰할 수 있게 만드는 핵심 기능들입니다.',
+                'gr1-title': '유전적 현실 점수',
+                'gr1-desc': '모든 생성된 모프에는 "유전적 확률 점수"가 포함됩니다. AI는 참조 체형의 삽입에 고유한 근육 형태와 훈련만으로 복제할 수 없는 것을 설명합니다.',
+                'gr1-tag': '기본으로 활성화',
+                'gr2-title': 'PED 현실 확인',
+                'gr2-desc': '"자연 선수"가 극도로 화학적으로 강화된 체형을 목표로 입력하면, AI가 자동으로 테스트된/자연적 동등물을 생성합니다.',
+                'gr2-tag': '자동 감지',
+                'gr3-title': '재귀적 진행 사실',
+                'gr3-desc': '4주마다 스캔이 프로젝션을 실제 신체 반응에 재고정합니다. 예측보다 느리게 성장하고 있다면 모프 타임라인이 조정됩니다.',
+                'gr3-tag': '4주마다',
+                'wl-label': '여러분의 피드백',
+                'wl-desc': '앱을 사용해 보셨나요? 좋든 나쁘든 무엇이든 들려주세요. 솔직한 피드백이 저희를 성장시킵니다.',
+                'wl-email-label': '이메일', 'wl-email-placeholder': 'you@example.com',
+                'wl-advice-label': '경험을 공유해 주세요',
+                'wl-advice-placeholder': '좋았던 점, 아쉬웠던 점, 원하는 기능 등 무엇이든 알려주세요...',
+                'btn-get-access': '피드백 제출 ',
+                'trust1': '모든 의견 환영', 'trust2': '스팸 없음', 'trust3': '제품 개발에 참여',
+                'footer-how': '작동 방식', 'footer-features': '기능', 'footer-safety': '안전', 'footer-waitlist': '피드백 남기기',
+                'popup-tag': '감사합니다!', 'popup-title': '피드백 접수 완료',
+                'popup-desc': '모든 응답을 직접 읽습니다. 여러분의 의견이 MorphPhysique AI의 다음 버전을 만들어 갑니다.',
+                'popup-badge1': '소중한 의견 감사', 'popup-badge2': '스팸 없음',
+            }
+        };
+
+        let currentLang = 'en';
+
+        function T(key) {
+            return LANG[currentLang][key] || LANG.en[key] || key;
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang === 'kr' ? 'ko' : 'en';
+
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-kr').classList.toggle('active', lang === 'kr');
+
+            if (lang === 'kr') {
+                document.getElementById('hero-title').innerHTML = '운동 전<br><span class="gradient-text">모프</span>를<br>확인하세요';
+                document.getElementById('hero-sub').innerHTML = '다음 <span style="color:var(--accent)">cBum</span>이 되어보세요.';
+                document.getElementById('feat-title').innerHTML = '비전 기반<br>자동 조절';
+                document.getElementById('waitlist-title').innerHTML = '생각을<br><span class="gradient-text">남겨주세요</span>';
+            } else {
+                document.getElementById('hero-title').innerHTML = 'See Your<br><span class="gradient-text">Morph</span><br>Before You<br>Lift';
+                document.getElementById('hero-sub').innerHTML = 'Be the next <span style="color:var(--accent)">cBum.</span>';
+                document.getElementById('feat-title').innerHTML = 'Vision-Driven<br>Autoregulation';
+                document.getElementById('waitlist-title').innerHTML = 'Leave Your<br><span class="gradient-text">Thoughts</span>';
+            }
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                el.textContent = T(el.getAttribute('data-i18n'));
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                el.placeholder = T(el.getAttribute('data-i18n-placeholder'));
+            });
+        }
+    </script>
 
     <!-- SCROLL REVEAL OBSERVER -->
     <script>

@@ -1,0 +1,1729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MorphPhysique AI — Try It</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --deep-space: #0D0D0F;
+            --surface-1: #141417;
+            --surface-2: #1A1A1E;
+            --surface-3: #222228;
+            --surface-4: #2A2A32;
+            --accent: #FF4D00;
+            --accent-light: #FF7A40;
+            --accent-glow: rgba(255, 77, 0, 0.40);
+            --text-primary: #F0EDE8;
+            --text-secondary: #8A8880;
+            --text-muted: #4A4845;
+            --border-subtle: rgba(255, 255, 255, 0.05);
+            --border-dim: rgba(255, 255, 255, 0.08);
+            --green: #22C55E;
+            --green-dim: rgba(34, 197, 94, 0.12);
+            --yellow: #F59E0B;
+            --yellow-dim: rgba(245, 158, 11, 0.12);
+            --red: #F43F5E;
+            --red-dim: rgba(244, 63, 94, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+            background: var(--deep-space);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px 80px;
+        }
+
+        /* ── Header row ── */
+        .header-row {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            max-width: 860px;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            font-size: 14px;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        /* ── Language toggle ── */
+        .lang-toggle {
+            margin-left: auto;
+            display: flex;
+            background: var(--surface-2);
+            border: 1px solid var(--border-dim);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .lang-btn {
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+            transition: all 0.2s;
+            letter-spacing: 0.02em;
+        }
+
+        .lang-btn.active {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .lang-btn:not(.active):hover {
+            color: var(--text-secondary);
+            background: var(--surface-3);
+        }
+
+        h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(36px, 6vw, 56px);
+            letter-spacing: 0.03em;
+            text-align: center;
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        h1 span { color: var(--accent); }
+
+        .subtitle {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 15px;
+        }
+
+        .morph-container {
+            width: 100%;
+            max-width: 860px;
+            background: var(--surface-1);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            padding: 32px;
+        }
+
+        /* ── Section label ── */
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 12px;
+        }
+
+        /* ── Upload areas ── */
+        .upload-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: rgba(255, 77, 0, 0.03);
+        }
+
+        .upload-area.has-image {
+            padding: 12px;
+            border-style: solid;
+            border-color: var(--accent);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--surface-2);
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 12px;
+            color: var(--accent);
+        }
+
+        .upload-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            word-break: break-all;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .upload-area input[type="file"] { display: none; }
+
+        .upload-area img.preview {
+            max-height: 180px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            display: none;
+        }
+
+        /* ── Stats row ── */
+        .stats-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+
+        .stat-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stat-field label {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-field input {
+            background: var(--surface-2);
+            border: 1px solid var(--border-dim);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .stat-field input:focus {
+            border-color: var(--accent);
+        }
+
+        .stat-field input::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* ── Goal input ── */
+        .goal-field {
+            margin-bottom: 28px;
+        }
+
+        .goal-field input {
+            background: var(--surface-2);
+            border: 1px solid var(--border-dim);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+
+        .goal-field input:focus {
+            border-color: var(--accent);
+        }
+
+        .goal-field input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* ── Generate button ── */
+        .generate-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 24px var(--accent-glow);
+        }
+
+        .generate-btn:hover {
+            background: #FF6620;
+            box-shadow: 0 0 40px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .generate-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* ── Error ── */
+        .error-msg {
+            display: none;
+            background: var(--red-dim);
+            border: 1px solid rgba(244, 63, 94, 0.2);
+            border-radius: 10px;
+            padding: 14px 18px;
+            color: var(--red);
+            font-size: 13px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .error-msg.visible { display: block; }
+
+        /* ── Loading ── */
+        .loading-overlay {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading-overlay.visible { display: block; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--surface-3);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .loading-text {
+            font-size: 15px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .loading-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 20px;
+            max-width: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .loading-step {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            padding: 6px 12px;
+            background: var(--surface-2);
+            border-radius: 6px;
+            text-align: left;
+            opacity: 0.4;
+            transition: opacity 0.5s;
+        }
+
+        .loading-step.active {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .loading-step.done {
+            opacity: 0.7;
+            color: var(--green);
+        }
+
+        /* ── Results ── */
+        .result-area {
+            display: none;
+        }
+
+        .result-area.visible { display: block; }
+
+        /* Before/After */
+        .result-images {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .result-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .result-card.after {
+            border-color: rgba(255, 77, 0, 0.3);
+        }
+
+        .result-card-label {
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 10px;
+        }
+
+        .result-card.after .result-card-label {
+            color: var(--accent);
+        }
+
+        .result-card img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        /* Reality score */
+        .reality-score-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .score-circle {
+            flex-shrink: 0;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid var(--green);
+            background: var(--green-dim);
+        }
+
+        .score-circle.medium {
+            border-color: var(--yellow);
+            background: var(--yellow-dim);
+        }
+
+        .score-circle.hard {
+            border-color: var(--red);
+            background: var(--red-dim);
+        }
+
+        .score-number {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--green);
+            line-height: 1;
+        }
+
+        .score-circle.medium .score-number { color: var(--yellow); }
+        .score-circle.hard .score-number { color: var(--red); }
+
+        .score-unit {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .score-info h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .score-info p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .score-meta {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .score-badge {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface-3);
+            border: 1px solid var(--border-dim);
+            border-radius: 6px;
+            padding: 4px 10px;
+            color: var(--text-secondary);
+        }
+
+        /* Analysis card */
+        .analysis-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin-bottom: 16px;
+        }
+
+        .analysis-card h3 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .analysis-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .analysis-item .ai-label {
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .analysis-item .ai-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .trait-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .trait-chip {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 77, 0, 0.08);
+            border: 1px solid rgba(255, 77, 0, 0.2);
+            border-radius: 100px;
+            padding: 3px 10px;
+            color: var(--accent-light);
+        }
+
+        /* Accordion sections */
+        .accordion {
+            border: 1px solid var(--border-dim);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .accordion-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 24px;
+            cursor: pointer;
+            background: var(--surface-2);
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .accordion-header:hover {
+            background: var(--surface-3);
+        }
+
+        .accordion-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .accordion-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .accordion.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            display: none;
+            background: var(--surface-1);
+            border-top: 1px solid var(--border-dim);
+        }
+
+        .accordion.open .accordion-body {
+            display: block;
+        }
+
+        /* Workout plan */
+        .plan-summary {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+
+        .plan-summary p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .plan-meta {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+
+        .plan-badge {
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface-3);
+            border: 1px solid var(--border-dim);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: var(--text-secondary);
+        }
+
+        .plan-badge strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .workout-days {
+            padding: 16px 24px;
+        }
+
+        .workout-day {
+            margin-bottom: 20px;
+        }
+
+        .workout-day:last-child {
+            margin-bottom: 0;
+        }
+
+        .day-header {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+        }
+
+        .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .exercise-table th {
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            text-align: left;
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+
+        .exercise-table td {
+            font-size: 13px;
+            padding: 8px 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            color: var(--text-secondary);
+            vertical-align: top;
+        }
+
+        .exercise-table td:first-child {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .exercise-table td.sets-reps {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .progression-note {
+            margin: 12px 24px 16px;
+            padding: 12px 16px;
+            background: rgba(255, 77, 0, 0.06);
+            border: 1px solid rgba(255, 77, 0, 0.15);
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .progression-note strong {
+            color: var(--accent-light);
+        }
+
+        /* Meal plan */
+        .macros-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-dim);
+        }
+
+        .macro-card {
+            background: var(--surface-3);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .macro-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .macro-label {
+            font-size: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .meals-list {
+            padding: 16px 24px;
+        }
+
+        .meal-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .meal-row:last-child {
+            border-bottom: none;
+        }
+
+        .meal-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-top: 5px;
+            flex-shrink: 0;
+        }
+
+        .meal-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            min-width: 110px;
+        }
+
+        .meal-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            flex: 1;
+        }
+
+        .meal-cal {
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        .supplements-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            padding: 12px 24px 16px;
+            border-top: 1px solid var(--border-dim);
+        }
+
+        .supp-chip {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--green-dim);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 100px;
+            padding: 4px 10px;
+            color: var(--green);
+        }
+
+        /* Key tips */
+        .tips-list {
+            padding: 16px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tip-row {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .tip-num {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--accent);
+            font-weight: 700;
+            min-width: 20px;
+            margin-top: 2px;
+        }
+
+        .tip-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Try again */
+        .result-actions {
+            display: flex;
+            justify-content: center;
+            padding-top: 8px;
+        }
+
+        .try-again-btn {
+            background: var(--surface-2);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 12px 32px;
+            border-radius: 100px;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans KR', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .try-again-btn:hover {
+            background: var(--surface-3);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Back link */
+        .back-link {
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .back-link a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .morph-container { padding: 20px; }
+            .upload-row { grid-template-columns: 1fr; }
+            .stats-row { grid-template-columns: 1fr 1fr; }
+            .result-images { grid-template-columns: 1fr; }
+            .analysis-grid { grid-template-columns: 1fr; }
+            .macros-grid { grid-template-columns: 1fr 1fr; }
+            .reality-score-card { flex-direction: column; text-align: center; }
+            .score-meta { justify-content: center; }
+        }
+        /* ── Feedback toast ── */
+        #feedback-toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            z-index: 9999;
+            background: var(--surface-2);
+            border: 1px solid rgba(255, 77, 0, 0.3);
+            border-radius: 14px;
+            padding: 16px 18px;
+            max-width: 300px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px var(--border-dim);
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            pointer-events: none;
+        }
+        #feedback-toast.visible {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        #feedback-toast .toast-icon {
+            font-size: 22px;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        #feedback-toast .toast-body { flex: 1; }
+        #feedback-toast .toast-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        #feedback-toast .toast-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        #feedback-toast .toast-link {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            background: rgba(255, 77, 0, 0.1);
+            border: 1px solid rgba(255, 77, 0, 0.25);
+            border-radius: 6px;
+            padding: 5px 10px;
+            transition: background 0.2s;
+        }
+        #feedback-toast .toast-link:hover { background: rgba(255, 77, 0, 0.2); }
+        #feedback-toast .toast-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            padding: 0;
+            flex-shrink: 0;
+            margin-top: 1px;
+            transition: color 0.2s;
+        }
+        #feedback-toast .toast-close:hover { color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <!-- ── Header: logo + language toggle ── -->
+    <div class="header-row">
+        <div class="logo">
+            <div class="logo-icon">M</div>
+            <div class="logo-text">MorphPhysique</div>
+        </div>
+        <div class="lang-toggle">
+            <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+            <button class="lang-btn" id="btn-kr" onclick="setLang('kr')">한국어</button>
+        </div>
+    </div>
+
+    <h1 id="main-title">See Your <span>Morph</span></h1>
+    <p class="subtitle" data-i18n="subtitle">Upload your photo + a target physique → get your custom plan</p>
+
+    <div class="morph-container">
+
+        <!-- ══ UPLOAD SECTION ══ -->
+        <div id="upload-section">
+
+            <!-- Two photo uploads -->
+            <div class="section-label" style="margin-bottom:12px" data-i18n="step1">Step 1 — Upload Photos</div>
+            <div class="upload-row">
+
+                <!-- Face photo -->
+                <div class="upload-area" id="face-area" onclick="document.getElementById('face-input').click()">
+                    <div class="upload-icon" id="face-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+                    </div>
+                    <div class="upload-title" id="face-title" data-i18n="face-title">Your Face Photo</div>
+                    <div class="upload-hint" id="face-hint" data-i18n="face-hint-default">Neutral expression, front-facing, no glasses</div>
+                    <img class="preview" id="face-preview" alt="Face Preview">
+                    <input type="file" id="face-input" accept="image/*">
+                </div>
+
+                <!-- Target physique -->
+                <div class="upload-area" id="target-area" onclick="document.getElementById('target-input').click()">
+                    <div class="upload-icon" id="target-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 4h12M6 20h12M12 4v16M8 8h8M8 16h8"/></svg>
+                    </div>
+                    <div class="upload-title" id="target-title" data-i18n="target-title">Target Physique Photo</div>
+                    <div class="upload-hint" id="target-hint" data-i18n="target-hint-default">The body you want to achieve</div>
+                    <img class="preview" id="target-preview" alt="Target Preview">
+                    <input type="file" id="target-input" accept="image/*">
+                </div>
+
+            </div>
+
+            <!-- Person name hint -->
+            <div class="goal-field" style="margin-bottom:20px">
+                <div class="section-label" style="margin-bottom:8px">
+                    <span data-i18n="person-label">Who is this person?</span>
+                    <span style="color:var(--text-muted);font-size:10px;text-transform:none;letter-spacing:0" data-i18n="person-optional"> (optional but improves accuracy)</span>
+                </div>
+                <input type="text" id="person-input" data-i18n-placeholder="person-placeholder" placeholder="e.g. David Laid, Eddie Hall, Chris Bumstead...">
+            </div>
+
+            <!-- User stats -->
+            <div class="section-label" data-i18n="step2">Step 2 — Your Current Stats</div>
+            <div class="stats-row" style="margin-bottom:16px">
+                <div class="stat-field">
+                    <label for="height-input" data-i18n="height-label">Height (cm)</label>
+                    <input type="number" id="height-input" placeholder="175" min="100" max="250">
+                </div>
+                <div class="stat-field">
+                    <label for="weight-input" data-i18n="weight-label">Weight (kg)</label>
+                    <input type="number" id="weight-input" placeholder="75" min="30" max="300">
+                </div>
+                <div class="stat-field">
+                    <label for="bf-input" data-i18n="bf-label">Body Fat (%)</label>
+                    <input type="number" id="bf-input" placeholder="18" min="3" max="50">
+                </div>
+            </div>
+
+            <div class="goal-field">
+                <div class="section-label" style="margin-bottom:8px" data-i18n="step3">Step 3 — Goal (optional)</div>
+                <input type="text" id="goal-input" data-i18n-placeholder="goal-placeholder" placeholder="e.g. Get visible abs, build capped shoulders, lose 10 kg...">
+            </div>
+
+            <!-- Error -->
+            <div class="error-msg" id="error-msg"></div>
+
+            <!-- Generate -->
+            <button class="generate-btn" id="generate-btn" onclick="generateMorph()" disabled data-i18n="btn-default">
+                Upload both photos to start
+            </button>
+        </div>
+
+        <!-- ══ LOADING ══ -->
+        <div class="loading-overlay" id="loading">
+            <div class="spinner"></div>
+            <div class="loading-text" data-i18n="loading-text">Generating your full plan...</div>
+            <div class="loading-steps">
+                <div class="loading-step" id="step-swap" data-i18n="step-swap">🔄 Face swap onto target physique</div>
+                <div class="loading-step" id="step-pose" data-i18n="step-pose">📐 MediaPipe pose analysis</div>
+                <div class="loading-step" id="step-gemini" data-i18n="step-gemini">🧠 Gemini Vision physique analysis</div>
+                <div class="loading-step" id="step-plan" data-i18n="step-plan">📋 Generating personalised plan</div>
+            </div>
+        </div>
+
+        <!-- ══ RESULTS ══ -->
+        <div class="result-area" id="result">
+
+            <!-- Before / After -->
+            <div class="result-images" style="margin-bottom:24px">
+                <div class="result-card">
+                    <div class="result-card-label" data-i18n="result-before">Your Photo</div>
+                    <img id="result-before" alt="Before">
+                </div>
+                <div class="result-card after">
+                    <div class="result-card-label" data-i18n="result-after">Your Morph</div>
+                    <img id="result-after" alt="After">
+                </div>
+            </div>
+
+            <!-- Reality score -->
+            <div class="reality-score-card" id="reality-card">
+                <div class="score-circle" id="score-circle">
+                    <span class="score-number" id="score-number">–</span>
+                    <span class="score-unit">/ 100</span>
+                </div>
+                <div class="score-info">
+                    <h3 id="score-label">–</h3>
+                    <p id="score-reasoning">–</p>
+                    <div class="score-meta">
+                        <span class="score-badge" id="score-timeline"></span>
+                        <span class="score-badge" id="score-bf-gap"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physique analysis -->
+            <div class="analysis-card" id="analysis-card" style="display:none">
+                <h3>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span data-i18n="analysis-title">Target Physique Analysis</span>
+                </h3>
+                <p id="physique-description" style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:12px;display:none"></p>
+                <div class="analysis-grid" id="analysis-grid"></div>
+                <div class="trait-chips" id="trait-chips"></div>
+            </div>
+
+            <!-- Workout plan accordion -->
+            <div class="accordion" id="workout-accordion">
+                <div class="accordion-header" onclick="toggleAccordion('workout-accordion')">
+                    <h3>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M6.5 6.5 17.5 17.5M17.5 6.5 6.5 17.5"/><circle cx="12" cy="12" r="10"/></svg>
+                        <span data-i18n="workout-title">Workout Plan</span>
+                    </h3>
+                    <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="accordion-body">
+                    <div class="plan-summary"><p id="plan-summary">–</p></div>
+                    <div class="plan-meta" id="plan-meta"></div>
+                    <div class="workout-days" id="workout-days"></div>
+                    <div class="progression-note" id="progression-note" style="display:none"></div>
+                </div>
+            </div>
+
+            <!-- Diet plan accordion -->
+            <div class="accordion" id="diet-accordion">
+                <div class="accordion-header" onclick="toggleAccordion('diet-accordion')">
+                    <h3>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>
+                        <span data-i18n="meal-title">Meal Plan</span>
+                    </h3>
+                    <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="accordion-body">
+                    <div class="macros-grid" id="macros-grid"></div>
+                    <div class="meals-list" id="meals-list"></div>
+                    <div class="supplements-row" id="supplements-row"></div>
+                </div>
+            </div>
+
+            <!-- Key tips accordion -->
+            <div class="accordion" id="tips-accordion">
+                <div class="accordion-header" onclick="toggleAccordion('tips-accordion')">
+                    <h3>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        <span data-i18n="tips-title">Key Tips</span>
+                    </h3>
+                    <svg class="accordion-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="accordion-body">
+                    <div class="tips-list" id="tips-list"></div>
+                </div>
+            </div>
+
+            <div class="result-actions" style="margin-top:20px">
+                <button class="try-again-btn" onclick="resetForm()" data-i18n="try-again">Try Again</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-link">
+        <a href="index.html" data-i18n="back-link">&larr; Back to MorphPhysique AI</a>
+    </div>
+
+    <script>
+        const API_URL = ""; // set automatically by: python backend/setup.py --ngrok --token YOUR_NGROK_TOKEN
+
+        // ── i18n ──
+
+        let currentLang = 'en';
+
+        const LANG = {
+            en: {
+                'subtitle':           'Upload your photo + a target physique → get your custom plan',
+                'step1':              'Step 1 — Upload Photos',
+                'face-title':         'Your Face Photo',
+                'face-hint-default':  'Neutral expression, front-facing, no glasses',
+                'face-hint-change':   'Click to change',
+                'target-title':       'Target Physique Photo',
+                'target-hint-default':'The body you want to achieve',
+                'target-hint-change': 'Click to change',
+                'person-label':       'Who is this person?',
+                'person-optional':    ' (optional but improves accuracy)',
+                'person-placeholder': 'e.g. David Laid, Eddie Hall, Chris Bumstead...',
+                'step2':              'Step 2 — Your Current Stats',
+                'height-label':       'Height (cm)',
+                'weight-label':       'Weight (kg)',
+                'bf-label':           'Body Fat (%)',
+                'step3':              'Step 3 — Goal (optional)',
+                'goal-placeholder':   'e.g. Get visible abs, build capped shoulders, lose 10 kg...',
+                'btn-default':        'Upload both photos to start',
+                'btn-morph':          'Generate My Morph →',
+                'btn-morph-plan':     'Generate My Morph + Plan →',
+                'loading-text':       'Generating your full plan...',
+                'step-swap':          '🔄 Face swap onto target physique',
+                'step-pose':          '📐 MediaPipe pose analysis',
+                'step-gemini':        '🧠 Gemini Vision physique analysis',
+                'step-plan':          '📋 Generating personalised plan',
+                'result-before':      'Your Photo',
+                'result-after':       'Your Morph',
+                'analysis-title':     'Target Physique Analysis',
+                'label-bodytype':     'Body Type',
+                'label-bodyfat':      'Est. Body Fat',
+                'label-training':     'Training Style',
+                'label-shoulderhip':  'Shoulder/Hip',
+                'workout-title':      'Workout Plan',
+                'meal-title':         'Meal Plan',
+                'tips-title':         'Key Tips',
+                'meta-split':         'Split',
+                'meta-frequency':     'Frequency',
+                'meta-phase':         'Phase',
+                'meta-timeline':      'Timeline',
+                'ex-exercise':        'Exercise',
+                'ex-setsreps':        'Sets × Reps',
+                'ex-notes':           'Notes',
+                'macro-kcal':         'kcal/day',
+                'macro-protein':      'Protein',
+                'macro-carbs':        'Carbs',
+                'macro-fat':          'Fat',
+                'weeks58':            'Weeks 5–8',
+                'try-again':          'Try Again',
+                'back-link':          '← Back to MorphPhysique AI',
+            },
+            kr: {
+                'subtitle':           '내 사진 + 목표 체형 사진 업로드 → 맞춤 플랜 받기',
+                'step1':              '1단계 — 사진 업로드',
+                'face-title':         '내 얼굴 사진',
+                'face-hint-default':  '정면, 무표정, 안경 없이',
+                'face-hint-change':   '클릭하여 변경',
+                'target-title':       '목표 체형 사진',
+                'target-hint-default':'원하는 체형 사진',
+                'target-hint-change': '클릭하여 변경',
+                'person-label':       '이 사람이 누구인가요?',
+                'person-optional':    ' (선택 사항 — 정확도 향상)',
+                'person-placeholder': '예: 데이비드 레이드, 에디 홀, 크리스 범스테드...',
+                'step2':              '2단계 — 현재 신체 정보',
+                'height-label':       '키 (cm)',
+                'weight-label':       '몸무게 (kg)',
+                'bf-label':           '체지방률 (%)',
+                'step3':              '3단계 — 목표 (선택)',
+                'goal-placeholder':   '예: 복근 만들기, 어깨 근육 키우기, 10kg 감량...',
+                'btn-default':        '사진을 업로드하여 시작하세요',
+                'btn-morph':          '내 모프 생성하기 →',
+                'btn-morph-plan':     '모프 + 플랜 생성하기 →',
+                'loading-text':       '플랜 생성 중...',
+                'step-swap':          '🔄 목표 체형에 얼굴 합성 중',
+                'step-pose':          '📐 자세 분석 중',
+                'step-gemini':        '🧠 체형 AI 분석 중',
+                'step-plan':          '📋 맞춤 플랜 생성 중',
+                'result-before':      '내 사진',
+                'result-after':       '내 모프',
+                'analysis-title':     '목표 체형 분석',
+                'label-bodytype':     '체형',
+                'label-bodyfat':      '예상 체지방',
+                'label-training':     '훈련 스타일',
+                'label-shoulderhip':  '어깨/엉덩이 비율',
+                'workout-title':      '운동 플랜',
+                'meal-title':         '식단 플랜',
+                'tips-title':         '핵심 팁',
+                'meta-split':         '분할',
+                'meta-frequency':     '빈도',
+                'meta-phase':         '단계',
+                'meta-timeline':      '기간',
+                'ex-exercise':        '운동',
+                'ex-setsreps':        '세트 × 횟수',
+                'ex-notes':           '메모',
+                'macro-kcal':         'kcal/일',
+                'macro-protein':      '단백질',
+                'macro-carbs':        '탄수화물',
+                'macro-fat':          '지방',
+                'weeks58':            '5~8주차',
+                'try-again':          '다시 시도',
+                'back-link':          '← MorphPhysique AI로 돌아가기',
+            }
+        };
+
+        function T(key) {
+            return LANG[currentLang][key] || LANG.en[key] || key;
+        }
+
+        function setLang(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang === 'kr' ? 'ko' : 'en';
+
+            // Toggle button active state
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            document.getElementById('btn-kr').classList.toggle('active', lang === 'kr');
+
+            // h1 special case (contains accent <span>)
+            if (lang === 'kr') {
+                document.getElementById('main-title').innerHTML = '당신의 <span>모프</span>를 확인하세요';
+            } else {
+                document.getElementById('main-title').innerHTML = 'See Your <span>Morph</span>';
+            }
+
+            // All elements with data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = T(key);
+            });
+
+            // Placeholder-only elements
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                el.placeholder = T(el.getAttribute('data-i18n-placeholder'));
+            });
+
+            // Re-apply dynamic state that depends on language
+            updateGenerateBtn();
+
+            // If a file is already loaded, restore the "click to change" hint
+            if (faceFile) document.getElementById('face-hint').textContent = T('face-hint-change');
+            if (targetFile) document.getElementById('target-hint').textContent = T('target-hint-change');
+        }
+
+        // ── File upload handlers ──
+
+        let faceFile = null;
+        let targetFile = null;
+
+        function setupUpload(inputId, areaId, iconId, titleId, hintId, previewId, hintChangeKey, onLoad) {
+            document.getElementById(inputId).addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    const preview = document.getElementById(previewId);
+                    preview.src = ev.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById(iconId).style.display = 'none';
+                    document.getElementById(titleId).textContent = file.name;
+                    document.getElementById(hintId).textContent = T(hintChangeKey);
+                    document.getElementById(areaId).classList.add('has-image');
+                    if (onLoad) onLoad(file);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        setupUpload('face-input', 'face-area', 'face-icon', 'face-title', 'face-hint', 'face-preview', 'face-hint-change', (file) => {
+            faceFile = file;
+            updateGenerateBtn();
+        });
+
+        setupUpload('target-input', 'target-area', 'target-icon', 'target-title', 'target-hint', 'target-preview', 'target-hint-change', (file) => {
+            targetFile = file;
+            updateGenerateBtn();
+        });
+
+        function updateGenerateBtn() {
+            const btn = document.getElementById('generate-btn');
+            const hasStats = document.getElementById('height-input').value &&
+                             document.getElementById('weight-input').value &&
+                             document.getElementById('bf-input').value;
+            if (faceFile && targetFile && hasStats) {
+                btn.disabled = false;
+                btn.textContent = T('btn-morph-plan');
+            } else if (faceFile && targetFile) {
+                btn.disabled = false;
+                btn.textContent = T('btn-morph');
+            } else {
+                btn.disabled = true;
+                btn.textContent = T('btn-default');
+            }
+        }
+
+        ['height-input', 'weight-input', 'bf-input'].forEach(id =>
+            document.getElementById(id).addEventListener('input', updateGenerateBtn)
+        );
+
+        // ── Loading step animation ──
+
+        let stepInterval = null;
+
+        function animateSteps() {
+            const steps = ['step-swap', 'step-pose', 'step-gemini', 'step-plan'];
+            let i = 0;
+            steps.forEach(id => document.getElementById(id).className = 'loading-step');
+            document.getElementById(steps[0]).classList.add('active');
+            stepInterval = setInterval(() => {
+                document.getElementById(steps[i]).classList.remove('active');
+                document.getElementById(steps[i]).classList.add('done');
+                i++;
+                if (i < steps.length) {
+                    document.getElementById(steps[i]).classList.add('active');
+                } else {
+                    clearInterval(stepInterval);
+                }
+            }, 9000);
+        }
+
+        // ── Generate ──
+
+        async function generateMorph() {
+            if (!faceFile || !targetFile) return;
+
+            document.getElementById('upload-section').style.display = 'none';
+            document.getElementById('result').classList.remove('visible');
+            document.getElementById('loading').classList.add('visible');
+            document.getElementById('error-msg').classList.remove('visible');
+            animateSteps();
+
+            const height  = parseFloat(document.getElementById('height-input').value) || 0;
+            const weight  = parseFloat(document.getElementById('weight-input').value) || 0;
+            const bodyFat = parseFloat(document.getElementById('bf-input').value) || 0;
+            const goal       = document.getElementById('goal-input').value.trim();
+            const personName = document.getElementById('person-input').value.trim();
+
+            const hasStats = height > 0 && weight > 0 && bodyFat > 0;
+
+            try {
+                let data;
+
+                if (hasStats) {
+                    const formData = new FormData();
+                    formData.append('face', faceFile);
+                    formData.append('target', targetFile);
+                    formData.append('height', height);
+                    formData.append('weight', weight);
+                    formData.append('body_fat', bodyFat);
+                    if (goal) formData.append('goal', goal);
+                    if (personName) formData.append('person_name', personName);
+                    formData.append('lang', currentLang);
+
+                    const response = await fetch(`${API_URL}/morph/full`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    data = await response.json();
+                } else {
+                    const formData = new FormData();
+                    formData.append('face', faceFile);
+                    formData.append('target', targetFile);
+
+                    const response = await fetch(`${API_URL}/morph/custom`, {
+                        method: 'POST',
+                        body: formData,
+                    });
+                    data = await response.json();
+                }
+
+                if (!data.success) throw new Error(data.error || 'Generation failed');
+
+                clearInterval(stepInterval);
+                document.getElementById('loading').classList.remove('visible');
+                renderResults(data, hasStats);
+
+            } catch (err) {
+                clearInterval(stepInterval);
+                document.getElementById('loading').classList.remove('visible');
+                document.getElementById('upload-section').style.display = 'block';
+                const errEl = document.getElementById('error-msg');
+                errEl.textContent = err.message;
+                errEl.classList.add('visible');
+            }
+        }
+
+        // ── Render results ──
+
+        function renderResults(data, hasStats) {
+            document.getElementById('result-before').src = URL.createObjectURL(faceFile);
+
+            const blob = base64ToBlob(data.image, 'image/png');
+            const blobUrl = URL.createObjectURL(blob);
+            document.getElementById('result-after').src = blobUrl;
+
+            if (hasStats && data.reality_score) {
+                renderRealityScore(data.reality_score);
+            } else {
+                document.getElementById('reality-card').style.display = 'none';
+            }
+
+            if (hasStats && data.target_analysis?.physique) {
+                renderAnalysis(data.target_analysis.physique, data.target_analysis.proportions);
+            } else {
+                document.getElementById('analysis-card').style.display = 'none';
+            }
+
+            if (hasStats && data.plan && !data.plan.error) {
+                renderWorkoutPlan(data.plan);
+                renderMealPlan(data.plan.meal_plan);
+                renderTips(data.plan.key_tips);
+                document.getElementById('workout-accordion').classList.add('open');
+            } else {
+                document.getElementById('workout-accordion').style.display = 'none';
+                document.getElementById('diet-accordion').style.display = 'none';
+                document.getElementById('tips-accordion').style.display = 'none';
+            }
+
+            document.getElementById('result').classList.add('visible');
+            showFeedbackToast();
+        }
+
+        function renderRealityScore(r) {
+            document.getElementById('score-number').textContent = r.score;
+            document.getElementById('score-label').textContent = r.label;
+            document.getElementById('score-reasoning').textContent = r.reasoning;
+
+            const circle = document.getElementById('score-circle');
+            circle.className = 'score-circle';
+            if (r.score < 40) circle.classList.add('hard');
+            else if (r.score < 70) circle.classList.add('medium');
+
+            if (r.timeline_weeks) {
+                document.getElementById('score-timeline').textContent = `⏱ ${r.timeline_weeks} weeks`;
+            }
+            if (r.body_fat_to_lose_pct) {
+                document.getElementById('score-bf-gap').textContent = `🔥 ${r.body_fat_to_lose_pct}% BF to lose`;
+            }
+        }
+
+        function renderAnalysis(physique, proportions) {
+            document.getElementById('analysis-card').style.display = 'block';
+            const grid = document.getElementById('analysis-grid');
+            const items = [
+                { label: T('label-bodytype'),    value: capitalize(physique.body_type || '–') },
+                { label: T('label-bodyfat'),     value: physique.estimated_body_fat_pct != null ? `${physique.estimated_body_fat_pct}%` : '–' },
+                { label: T('label-training'),    value: capitalize(physique.training_style || '–') },
+                { label: T('label-shoulderhip'), value: proportions?.shoulder_hip_ratio != null ? `${proportions.shoulder_hip_ratio} ${proportions.v_taper ? '(V-taper ✓)' : ''}` : '–' },
+            ];
+            grid.innerHTML = items.map(i => `
+                <div class="analysis-item">
+                    <span class="ai-label">${i.label}</span>
+                    <span class="ai-value">${i.value}</span>
+                </div>
+            `).join('');
+
+            const chips = document.getElementById('trait-chips');
+            const traits = [
+                ...(physique.key_visual_traits || []),
+                ...(physique.dominant_muscle_groups || []).map(m => `💪 ${m}`),
+            ];
+            chips.innerHTML = traits.map(t => `<span class="trait-chip">${t}</span>`).join('');
+
+            const descEl = document.getElementById('physique-description');
+            if (physique.physique_description) {
+                descEl.textContent = physique.physique_description;
+                descEl.style.display = 'block';
+            } else {
+                descEl.textContent = '';
+                descEl.style.display = 'none';
+            }
+        }
+
+        function renderWorkoutPlan(plan) {
+            const w = plan.workout_plan;
+            if (!w) return;
+
+            document.getElementById('plan-summary').textContent = plan.summary || '';
+
+            const meta = document.getElementById('plan-meta');
+            meta.innerHTML = [
+                w.split     ? `<span class="plan-badge"><strong>${T('meta-split')}:</strong> ${w.split}</span>` : '',
+                w.frequency ? `<span class="plan-badge"><strong>${T('meta-frequency')}:</strong> ${w.frequency}</span>` : '',
+                plan.phase  ? `<span class="plan-badge"><strong>${T('meta-phase')}:</strong> ${capitalize(plan.phase)}</span>` : '',
+                plan.timeline ? `<span class="plan-badge"><strong>${T('meta-timeline')}:</strong> ${plan.timeline}</span>` : '',
+            ].join('');
+
+            const days = document.getElementById('workout-days');
+            const week14 = w.week_1_4 || [];
+            days.innerHTML = week14.map(day => `
+                <div class="workout-day">
+                    <div class="day-header">${day.day || 'Day'}</div>
+                    <table class="exercise-table">
+                        <thead>
+                            <tr>
+                                <th>${T('ex-exercise')}</th>
+                                <th>${T('ex-setsreps')}</th>
+                                <th>${T('ex-notes')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${(day.exercises || []).map(ex => `
+                                <tr>
+                                    <td>${ex.name || ''}</td>
+                                    <td class="sets-reps">${ex.sets || '–'} × ${ex.reps || '–'}</td>
+                                    <td>${ex.notes || ''}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `).join('');
+
+            if (w.week_5_8_changes) {
+                const note = document.getElementById('progression-note');
+                note.innerHTML = `<strong>${T('weeks58')}:</strong> ${w.week_5_8_changes}`;
+                note.style.display = 'block';
+            }
+        }
+
+        function renderMealPlan(meal) {
+            if (!meal) return;
+
+            const macros = document.getElementById('macros-grid');
+            macros.innerHTML = [
+                { val: meal.daily_calories,                           label: T('macro-kcal') },
+                { val: meal.protein_g ? `${meal.protein_g}g` : '–',  label: T('macro-protein') },
+                { val: meal.carbs_g   ? `${meal.carbs_g}g`   : '–',  label: T('macro-carbs') },
+                { val: meal.fat_g     ? `${meal.fat_g}g`     : '–',  label: T('macro-fat') },
+            ].map(m => `
+                <div class="macro-card">
+                    <div class="macro-value">${m.val || '–'}</div>
+                    <div class="macro-label">${m.label}</div>
+                </div>
+            `).join('');
+
+            const meals = document.getElementById('meals-list');
+            meals.innerHTML = (meal.meals || []).map(m => `
+                <div class="meal-row">
+                    <div class="meal-dot"></div>
+                    <div class="meal-name">${m.meal || ''}</div>
+                    <div class="meal-desc">${m.description || ''}</div>
+                    <div class="meal-cal">${m.calories ? m.calories + ' kcal' : ''}</div>
+                </div>
+            `).join('');
+
+            const supps = document.getElementById('supplements-row');
+            if (meal.supplements?.length) {
+                supps.innerHTML = meal.supplements.map(s => `<span class="supp-chip">${s}</span>`).join('');
+                if (meal.hydration) {
+                    supps.insertAdjacentHTML('afterend', `<div style="padding:0 24px 16px;font-size:13px;color:var(--text-muted)">💧 ${meal.hydration}</div>`);
+                }
+            }
+        }
+
+        function renderTips(tips) {
+            if (!tips?.length) return;
+            const list = document.getElementById('tips-list');
+            list.innerHTML = tips.map((tip, i) => `
+                <div class="tip-row">
+                    <span class="tip-num">0${i + 1}</span>
+                    <span class="tip-text">${tip}</span>
+                </div>
+            `).join('');
+        }
+
+        // ── Accordion ──
+
+        function toggleAccordion(id) {
+            document.getElementById(id).classList.toggle('open');
+        }
+
+        // ── Reset ──
+
+        function resetForm() {
+            document.getElementById('result').classList.remove('visible');
+            document.getElementById('upload-section').style.display = 'block';
+
+            const afterImg = document.getElementById('result-after');
+            if (afterImg.src.startsWith('blob:')) URL.revokeObjectURL(afterImg.src);
+            afterImg.src = '';
+
+            document.getElementById('person-input').value = '';
+            document.getElementById('goal-input').value = '';
+
+            faceFile = null;
+            targetFile = null;
+            ['face', 'target'].forEach(prefix => {
+                document.getElementById(`${prefix}-input`).value = '';
+                document.getElementById(`${prefix}-preview`).style.display = 'none';
+                document.getElementById(`${prefix}-icon`).style.display = 'grid';
+                document.getElementById(`${prefix}-title`).textContent = T(`${prefix}-title`);
+                document.getElementById(`${prefix}-hint`).textContent = T(`${prefix}-hint-default`);
+                document.getElementById(`${prefix}-area`).classList.remove('has-image');
+            });
+
+            ['workout-accordion', 'diet-accordion', 'tips-accordion'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.remove('open');
+                el.style.display = '';
+            });
+
+            updateGenerateBtn();
+        }
+
+        // ── Utils ──
+
+        function base64ToBlob(b64, mime) {
+            const bytes = atob(b64);
+            const arr = new Uint8Array(bytes.length);
+            for (let i = 0; i < bytes.length; i++) arr[i] = bytes.charCodeAt(i);
+            return new Blob([arr], { type: mime });
+        }
+
+        function capitalize(s) {
+            return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+        }
+        // ── Feedback toast ──
+        function showFeedbackToast() {
+            if (sessionStorage.getItem('feedbackToastShown')) return;
+            sessionStorage.setItem('feedbackToastShown', '1');
+            const toast = document.getElementById('feedback-toast');
+            setTimeout(() => toast.classList.add('visible'), 3000);
+        }
+
+        document.getElementById('feedback-toast-close').addEventListener('click', () => {
+            document.getElementById('feedback-toast').classList.remove('visible');
+        });
+
+        function capitalize(s) {
+            return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+        }
+    </script>
+
+    <div id="feedback-toast">
+        <div class="toast-icon">💬</div>
+        <div class="toast-body">
+            <div class="toast-title">How was your morph?</div>
+            <div class="toast-desc">Good, bad, or somewhere in between — we want to hear it.</div>
+            <a class="toast-link" href="index.html#waitlist">Leave your thoughts →</a>
+        </div>
+        <button class="toast-close" id="feedback-toast-close" aria-label="Dismiss">✕</button>
+    </div>
+</body>
+</html>
